@@ -1,18 +1,16 @@
-# server.py
-import socket
+from flask import Flask, request
 
-HOST = '0.0.0.0'
-PORT = 5000
+app = Flask(__name__)
 
-with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-    s.bind((HOST, PORT))
-    s.listen()
-    conn, addr = s.accept()
-    with conn:
-        print('Connected by', addr)
-        while True:
-            data = conn.recv(1024)
-            if not data:
-                break
-            conn.sendall(data)
+@app.route('/', methods=['GET', 'POST'])
+def echo():
+    if request.method == 'POST':
+        message = request.form.get('message', '')
+        return f"You said: {message}"
+    else:
+        return "Hello, please enter a message!"
 
+if __name__ == '__main__':
+    # Set the port number here
+    port = 8000
+    app.run(debug=True, port=port)
